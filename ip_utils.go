@@ -32,6 +32,11 @@ func getIPAddress(r *http.Request) string {
 
 // isPrivateSubnet - check to see if this ip is in a private subnet
 func isPrivateSubnet(ipAddress net.IP) bool {
+	// check if the ip is loopback or link-local
+	if ipAddress.IsLoopback() || ipAddress.IsLinkLocalUnicast() || ipAddress.IsLinkLocalMulticast() {
+		return true
+	}
+
 	if ipCheck := ipAddress.To4(); ipCheck != nil {
 		// iterate over all our ranges
 		for _, r := range privateRanges {
